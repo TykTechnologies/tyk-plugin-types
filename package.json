@@ -1,0 +1,40 @@
+{
+  "name": "@tyk-technologies/tyk-plugin-types",
+  "version": "0.1.0",
+  "description": "TypeScript ambient type declarations for the Tyk gateway JSVM plugin runtime (goja and otto).",
+  "types": "src/index.d.ts",
+  "files": [
+    "src/index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "tyk",
+    "tyk-gateway",
+    "goja",
+    "otto",
+    "javascript",
+    "plugin",
+    "middleware",
+    "typescript",
+    "types"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TykTechnologies/tyk-plugin-types.git"
+  },
+  "homepage": "https://github.com/TykTechnologies/tyk-plugin-types",
+  "bugs": {
+    "url": "https://github.com/TykTechnologies/tyk-plugin-types/issues"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "@tyk-technologies/tyk-plugin-types",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TypeScript ambient type declarations for the Tyk gateway JSVM plugin runtime (goja and otto).",
   "types": "src/index.d.ts",
   "files": [

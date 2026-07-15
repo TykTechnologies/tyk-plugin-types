@@ -236,6 +236,79 @@ declare function TykSetKeyData(apiKey: string, sessionJson: string, suppressRese
 /** Issues a batch of HTTP requests. Argument is a JSON string. Returns JSON string or `undefined` on error. */
 declare function TykBatchRequest(requestSet: string): string | undefined;
 
+// ----- Plugin key-value storage (goja JSVM only) -----
+//
+// All six `TykStorage*` functions share these semantics:
+// - They THROW a JS exception on any failure: Redis outage, operation timeout
+//   (~2s), key longer than 256 bytes, or value larger than 64KB. Wrap calls in
+//   try/catch to handle failures — an outage is never conflated with a missing key.
+// - Keys are automatically namespaced under a dedicated gateway prefix, so
+//   plugins cannot read or write gateway-internal keys.
+// - Atomicity is per Redis instance. In multi-node hybrid deployments the
+//   guarantees are per-edge-node unless all gateways share one Redis.
+
+/**
+ * Reads a value from plugin storage.
+ *
+ * Returns `null` if the key does not exist. THROWS on Redis failure or
+ * timeout — a backend outage is never conflated with key-absent.
+ *
+ * Availability: goja JSVM engine.
+ */
+declare function TykStorageGet(key: string): string | null;
+
+/**
+ * Writes a value to plugin storage with a TTL.
+ *
+ * `ttlSeconds` of `0` means no expiry. THROWS on failure (Redis outage,
+ * timeout, key > 256 bytes, value > 64KB).
+ *
+ * Availability: goja JSVM engine.
+ */
+declare function TykStorageSet(key: string, value: string, ttlSeconds: number): void;
+
+/**
+ * Atomically claims a key (Redis `SET NX EX`): writes the value only if the
+ * key does not already exist.
+ *
+ * Returns `true` if this caller claimed the key, `false` if it already
+ * existed. This is the primitive for idempotency guards, locks, and replay
+ * protection. `ttlSeconds` of `0` means no expiry. THROWS on failure.
+ *
+ * Availability: goja JSVM engine.
+ */
+declare function TykStorageSetNX(key: string, value: string, ttlSeconds: number): boolean;
+
+/**
+ * Deletes a key from plugin storage. Deleting a missing key is not an error.
+ * THROWS on Redis failure or timeout.
+ *
+ * Availability: goja JSVM engine.
+ */
+declare function TykStorageDel(key: string): void;
+
+/**
+ * Returns the remaining time-to-live of a key in seconds, following Redis
+ * semantics: `-1` means the key exists but has no expiry, `-2` means the key
+ * does not exist. THROWS on Redis failure or timeout.
+ *
+ * Availability: goja JSVM engine.
+ */
+declare function TykStorageTTL(key: string): number;
+
+/**
+ * Atomically increments a counter and returns the new value AS A STRING —
+ * this avoids JS `Number` precision loss above 2^53; use `parseInt` for
+ * small counters.
+ *
+ * `ttlSeconds` is applied only on the increment that creates the key
+ * (`0` = no expiry). Atomic per Redis instance, so safe for rate-limit-style
+ * counting within a node. THROWS on failure.
+ *
+ * Availability: goja JSVM engine.
+ */
+declare function TykStorageIncr(key: string, ttlSeconds: number): string;
+
 /** Writes a structured info-level log line via the gateway's logrus logger. */
 declare function log(msg: string): void;
 

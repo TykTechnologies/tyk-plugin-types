@@ -55,6 +55,9 @@ Or, if you'd rather not use a triple-slash directive, add the package to
 - Globals registered by the gateway (`TykMakeHttpRequest`, `TykGetKeyData`,
   `TykSetKeyData`, `TykBatchRequest`, `log`, `rawlog`, `b64enc`, `b64dec`,
   `rawb64enc`, `rawb64dec`).
+- Plugin key-value storage globals, goja only (`TykStorageGet`,
+  `TykStorageSet`, `TykStorageSetNX`, `TykStorageDel`, `TykStorageTTL`,
+  `TykStorageIncr`).
 - Helper types for the JSON-string contracts (`TykHttpRequestSpec`,
   `TykHttpResponseRaw`).
 - Manifest constants (`TykPluginDriver`, `TykMiddlewareHook`).

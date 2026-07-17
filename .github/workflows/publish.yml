@@ -15,9 +15,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
-      # Trusted publishing (OIDC) needs npm >= 11.5.1; Node 20 ships npm 10.x.
+      # Trusted publishing (OIDC) needs npm >= 11.5.1.
       - run: npm install -g npm@latest
 
       - id: check

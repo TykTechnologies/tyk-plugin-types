@@ -16,7 +16,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+
+      # Trusted publishing (OIDC) needs npm >= 11.5.1; Node 20 ships npm 10.x.
+      - run: npm install -g npm@latest
 
       - id: check
         name: Has package.json version already been published?
@@ -41,8 +43,6 @@ jobs:
 
       - if: steps.check.outputs.skip == 'false'
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - if: steps.check.outputs.skip == 'false'
         name: Tag and create GitHub release
